@@ -84,6 +84,8 @@ def Read_phase(phase_file, file_type):
         'event_time': [],
         'event_id': [],
         'event_location': [],
+        'event_magnitude': [],
+        'num_recs': [],
         'phase_stations':[],
         'station_locations': [],
         'P_arrival_times': [],
@@ -147,6 +149,9 @@ def Read_phase(phase_file, file_type):
                         event_time = None
                         continue
                     phase_list['event_time'].append(event_time)
+                    phase_list['event_id'].append(parts[-1])
+                    phase_list['event_magnitude'].append(float(parts[10]))
+                    phase_list['num_recs'].append(int(parts[11]))
                     phase_list['event_location'].append((float(parts[7]), float(parts[8]), float(parts[9])))
                     phase_list['phase_stations'].append([])
                     phase_list['station_locations'].append([])
@@ -156,7 +161,7 @@ def Read_phase(phase_file, file_type):
                     parts = line.strip().split()
                     if event_time is not None:
                         phase_list['phase_stations'][-1].append(parts[2])
-                        phase_list['station_locations'][-1].append((float(parts[3]), float(parts[4])))
+                        phase_list['station_locations'][-1].append((float(parts[3]), float(parts[4]), float(parts[5])))
                         try:
                             if parts[6] == 'P':
                                 P_travel_time = float(parts[7])
