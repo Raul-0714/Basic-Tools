@@ -177,6 +177,56 @@ def Read_phase(phase_file, file_type):
     return phase_list
 
 
+def Read_common_receiver_phase_file(cr_phase_file, network_code=''):
+
+    def Is_event_line(line):
+        if line.startswith('#'):
+            return True
+
+    cr_phase_list = {
+        'main_event_id': [],
+        'paired_event_id': [],
+        'P_station_name': [],
+        'S_station_name': [],
+        'P_dt': [],
+        'S_dt': []
+    }
+
+    with open(cr_phase_file, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            parts = line.strip().split()
+            if Is_event_line(line):
+                try:
+                    cr_phase_list['main_event_id'].append(parts[1])
+                    cr_phase_list['paired_event_id'].append(parts[2])
+                    cr_phase_list['P_station_name'].append([])
+                    cr_phase_list['S_station_name'].append([])
+                    cr_phase_list['P_dt'].append([])
+                    cr_phase_list['S_dt'].append([])
+                except Exception as e:
+                    print(f"Error parsing event line: {line} with error {e}")
+                    continue
+            else:
+                try:
+                    station_name = parts[0]
+                    if network_code:
+                        station_name = network_code + '.' + station_name
+                    if parts[-1] == 'P':
+                        cr_phase_list['P_station_name'][-1].append(station_name)
+                        dt = float(parts[1]) - float(parts[2])
+                        cr_phase_list['P_dt'][-1].append(dt)
+                    elif parts[-1] == 'S':
+                        cr_phase_list['S_station_name'][-1].append(station_name)
+                        dt = float(parts[1]) - float(parts[2])
+                        cr_phase_list['S_dt'][-1].append(dt)
+                except Exception as e:
+                    print(f"Error parsing phase line: {line} with error {e}")
+                    continue
+
+    return cr_phase_list
+
+
 def Read_faults_list(file, region):
     # Read fault list from a .kml file
     # A typical fault list file has the following format:
