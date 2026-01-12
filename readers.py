@@ -15,7 +15,9 @@ def Read_catalog(catalog_file, file_type):
         'latitude': [],
         'longitude': [],
         'depth': [],
-        'magnitude': []
+        'magnitude': [],
+        'event_id': [],
+        'reloc_quality': []
     } 
     if file_type == '.dat':
         with open(catalog_file, 'r') as f:
@@ -30,17 +32,19 @@ def Read_catalog(catalog_file, file_type):
 
     elif file_type == '.xlsx':
         # Read Excel file
-        # Time, Longitude, Latitude, Depth, Magnitude
+        # Time, Longitude, Latitude, Depth, Magnitude, Event_ID, Relocation_Quality
         # Skip the first row (header)
         wb = openpyxl.load_workbook(catalog_file)
         sheet = wb.active
-        for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row, min_col=1, max_col=5):
+        for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row, min_col=1, max_col=7):
             try:
                 event_list['time'].append(UTCDateTime(row[0].value))
                 event_list['longitude'].append(float(row[1].value))
                 event_list['latitude'].append(float(row[2].value))
                 event_list['depth'].append(float(row[3].value))
                 event_list['magnitude'].append(float(row[4].value))
+                event_list['event_id'].append(int(row[5].value))
+                event_list['reloc_quality'].append(row[6].value)
             except TypeError:
                 print(row)
 
