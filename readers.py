@@ -5,10 +5,6 @@ from obspy import UTCDateTime
 
 
 def Read_catalog(catalog_file, file_type):
-    # Read catalog file and extract event locations and magnitudes
-    # A typical catalog file has the following format:
-    # origin_time, latitude, longitude, depth, magnitude
-    # 2023-06-19T18:31:37.518071Z, 38.08514, 37.0428, 10.0, 4.5
 
     event_list = {
         'time': [],
