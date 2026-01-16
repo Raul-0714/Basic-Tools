@@ -24,3 +24,20 @@ def Calculate_travel_distance(station_location, event_location, consider_depth=F
         distance = np.sqrt(distance**2 + depth**2)
     
     return distance
+
+
+def Convert_polar_to_lat_lon(origin, distance_km, azimuth_rad):
+    R = 6371.0
+
+    lat1 = np.radians(origin[0])
+    lon1 = np.radians(origin[1])
+
+    angular_distance = distance_km / R
+    azimuth = azimuth_rad
+    lat2 = np.arcsin(np.sin(lat1) * np.cos(angular_distance) +
+                     np.cos(lat1) * np.sin(angular_distance) * np.cos(azimuth))
+    lon2 = lon1 + np.arctan2(np.sin(azimuth) * np.sin(angular_distance) * np.cos(lat1),
+                             np.cos(angular_distance) - np.sin(lat1) * np.sin(lat2))
+    lat2 = np.degrees(lat2)
+    lon2 = np.degrees(lon2)
+    return (lat2, lon2)
