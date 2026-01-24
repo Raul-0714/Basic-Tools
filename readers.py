@@ -368,7 +368,7 @@ def Read_Hypoinverse_output(filename):
                 index = 1
                 try:
                     station_name = parts[1] + '.' + parts[0]
-                    P_weight = float(parts[12])
+                    P_weight = parts[12]
                     continue
                 except (IndexError, ValueError):
                     print("Invalid line: ", line)
@@ -378,7 +378,7 @@ def Read_Hypoinverse_output(filename):
                 parts = line.strip().split()
                 index = 0
                 try:
-                    S_weight = float(parts[7][:-1])
+                    S_weight = parts[7][:-1]
                     evid_station_weight[evid].append((station_name, P_weight, S_weight))
                     continue
                 except (IndexError, ValueError):
