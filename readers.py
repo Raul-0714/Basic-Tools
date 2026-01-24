@@ -320,6 +320,73 @@ def Read_station_list(station_folder, array_name, skip_header=False):
     stations_list['elevation'] = np.array(stations_list['elevation'])
     stations_list['scaling_factor'] = np.array(stations_list['scaling_factor'])
     return stations_list
+
+
+def Read_Hypoinverse_output(filename):
+    evid_station_weight = {}
+
+    def Is_event_line(line):
+        # If the line contains 'SEQUENCE NO.', it is an event line
+        if 'SEQUENCE NO.' in line:
+            return True
+        
     
+    def Is_header_line_of_station_weight(line):
+        # If the line contains 'STA NET COM', it is a header line of station weight
+        if 'STA NET COM' in line:
+            return True
+        
+
+    def Is_terminator_line(line):
+        # If the line contains '##########', it is a terminator line
+        if '##########' in line:
+            return True
+
+
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+        index = -1
+        station_name = ''
+        P_weight = 0.0
+        S_weight = 0.0
+        for line in lines:
+            if Is_event_line(line):
+                evid = str(line.strip().split()[-1])
+                evid_station_weight[evid] = []
+                continue
+
+            if Is_header_line_of_station_weight(line):
+                index = 0
+                continue
+
+            if Is_terminator_line(line):
+                index = -1
+                continue
+
+            if index == 0:
+                parts = line.strip().split()
+                index = 1
+                try:
+                    station_name = parts[1] + '.' + parts[0]
+                    P_weight = float(parts[12])
+                    continue
+                except (IndexError, ValueError):
+                    print("Invalid line: ", line)
+                    continue
+
+            if index == 1:
+                parts = line.strip().split()
+                index = 0
+                try:
+                    S_weight = float(parts[7][:-1])
+                    evid_station_weight[evid].append((station_name, P_weight, S_weight))
+                    continue
+                except (IndexError, ValueError):
+                    print("Invalid line: ", line)
+                    continue
+
+
+    return evid_station_weight
+
 
 
