@@ -378,7 +378,7 @@ def Read_Hypoinverse_output(filename):
                 parts = line.strip().split()
                 index = 0
                 try:
-                    S_weight = parts[7][:-1]
+                    S_weight = parts[7]
                     evid_station_weight[evid].append((station_name, P_weight, S_weight))
                     continue
                 except (IndexError, ValueError):
