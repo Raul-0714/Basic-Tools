@@ -58,7 +58,7 @@ def Read_phase(phase_file, file_type):
     # Read phase file and extract P and S arrival times
     # A typical phase file has the following format (PAL-Output):
     # Event line: time(can be in two formats: 2023-05-04T23:23:05.759223Z or 20230504232305.91),latitude,longitude,depth,magnitude
-    # Phase line: station_name,P_arrival_time,S_arrival_time
+    # Phase line: station_name,P_arrival_time,S_arrival_time, P_weight,S_weight
     # A typical phase file has the following format (TomoATT-Input):
     # Event line: Event-index year month day hour minute second latitude longitude dep_km magnitude num_recs id_event
     # Phase line: Event-index receiver-index station_name latitude longitude elevation_m phase_type travel_times
@@ -91,7 +91,9 @@ def Read_phase(phase_file, file_type):
         'P_arrival_times': [],
         'S_arrival_times': [],
         'P_travel_times': [],
-        'S_travel_times': []
+        'S_travel_times': [],
+        'P_weights': [],
+        'S_weights': []
     }
     
     if file_type == 'Hypoinverse-Output':
@@ -117,6 +119,8 @@ def Read_phase(phase_file, file_type):
                     phase_list['phase_stations'].append([])
                     phase_list['P_arrival_times'].append([])
                     phase_list['S_arrival_times'].append([])
+                    phase_list['P_weights'].append([])
+                    phase_list['S_weights'].append([])
                 else:
                     parts = line.strip().split(',')
                     if event_time is not None:
@@ -133,6 +137,18 @@ def Read_phase(phase_file, file_type):
                             print(f"Error parsing S arrival time: {parts[2]} with error {e}")
                             S_time = None
                         phase_list['S_arrival_times'][-1].append(S_time)
+                        try:
+                            P_weight = float(parts[5])
+                        except Exception as e:
+                            print(f"Error parsing P weight: {parts[5]} with error {e}")
+                            P_weight = None
+                        phase_list['P_weights'][-1].append(P_weight)
+                        try:
+                            S_weight = float(parts[6][:-1])
+                        except Exception as e:
+                            print(f"Error parsing S weight: {parts[6]} with error {e}")
+                            S_weight = None
+                        phase_list['S_weights'][-1].append(S_weight)
 
     elif file_type == 'TomoATT-Input':
         with open(phase_file, 'r') as f:
