@@ -128,25 +128,21 @@ def Read_phase(phase_file, file_type):
                         try:
                             P_time = UTCDateTime(parts[1])
                         except Exception as e:
-                            print(f"Error parsing P arrival time: {parts[1]} with error {e}")
                             P_time = None
                         phase_list['P_arrival_times'][-1].append(P_time)
                         try:
                             S_time = UTCDateTime(parts[2])
                         except Exception as e:
-                            print(f"Error parsing S arrival time: {parts[2]} with error {e}")
                             S_time = None
                         phase_list['S_arrival_times'][-1].append(S_time)
                         try:
                             P_weight = float(parts[5])
                         except Exception as e:
-                            print(f"Error parsing P weight: {parts[5]} with error {e}")
                             P_weight = None
                         phase_list['P_weights'][-1].append(P_weight)
                         try:
                             S_weight = float(parts[6][:-1])
                         except Exception as e:
-                            print(f"Error parsing S weight: {parts[6]} with error {e}")
                             S_weight = None
                         phase_list['S_weights'][-1].append(S_weight)
 
