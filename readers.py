@@ -401,4 +401,36 @@ def Read_Hypoinverse_output(filename):
     return evid_station_weight
 
 
+def Read_mainshocks_info(filename, skip_header=False):
+    mainshocks_info = {
+        'index': [],
+        'magnitude': [],
+        'focal_mechanism': [], # (strike, dip, rake)
+        'epicenter_location': [], # (latitude, longitude)
+        'fracture_init_point': [], # (latitude, longitude)
+        'symbol_style': [] # (style_string, color,string)
+    }
+
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+        if skip_header:
+            lines = lines[1:]
+        for line in lines:
+            parts = line.strip().split(',')
+            try:
+                mainshocks_info['index'].append(int(parts[0]))
+                mainshocks_info['magnitude'].append(float(parts[1]))
+                mainshocks_info['focal_mechanism'].append((float(parts[2]), float(parts[3]), float(parts[4])))
+                mainshocks_info['epicenter_location'].append((float(parts[5]), float(parts[6])))
+                mainshocks_info['fracture_init_point'].append((float(parts[7]), float(parts[8])))
+                mainshocks_info['symbol_style'].append((parts[9], parts[10]))
+            except (IndexError, ValueError):
+                    print("Invalid line: ", line)
+                    continue
+
+    return mainshocks_info
+
+
+
+
 
