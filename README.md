@@ -7,3 +7,7 @@ readers.py
 
 calculators.py
   This script defines functions that do basic calculation in Seismology. Import this file as a module to use functions in this file.
+
+
+file_processors.py
+  This script defines functions that do works with processing files.
