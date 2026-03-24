@@ -11,3 +11,7 @@ calculators.py
 
 file_processors.py
   This script defines functions that do works with processing files.
+
+
+picker_pal.py
+  The STA/LTA phase picker from PAL catalog constructing workflow.
