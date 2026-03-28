@@ -1,7 +1,7 @@
 import openpyxl
 import os
 import numpy as np
-from obspy import UTCDateTime
+from obspy import UTCDateTime, read
 
 
 def Read_catalog(catalog_file, file_type):
@@ -75,6 +75,9 @@ def Read_phase(phase_file, file_type):
             parts = line.strip().split()
             if len(parts[1]) == 4:
                 Is_event = True
+        elif file_type == 'Picker-Output':
+            if line.startswith('202'):
+                Is_event = True
 
         return Is_event
 
@@ -115,6 +118,7 @@ def Read_phase(phase_file, file_type):
                     phase_list['event_time'].append(event_time)
                     if parts[-1]:
                         phase_list['event_id'].append(parts[-1])
+                    phase_list['event_magnitude'].append(float(parts[-2]))
                     phase_list['event_location'].append((float(parts[1]), float(parts[2]), float(parts[3])))
                     phase_list['phase_stations'].append([])
                     phase_list['P_arrival_times'].append([])
@@ -185,6 +189,32 @@ def Read_phase(phase_file, file_type):
                         except Exception as e:
                             print(f"Error parsing travel time with error {e}")
                             continue
+
+    elif file_type == 'Picker-Output':
+        with open(phase_file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if  Is_event_line(line):
+                    parts = line.strip().split(',')
+                    if parts[-1]:
+                        phase_list['event_id'].append(parts[-1])
+                    phase_list['num_recs'].append(int(parts[1]))
+                    phase_list['phase_stations'].append([])
+                    phase_list['P_arrival_times'].append([])
+                    phase_list['S_arrival_times'].append([])
+                else:
+                    parts = line.strip().split(',')
+                    phase_list['phase_stations'][-1].append(parts[0])
+                    try:
+                        P_time = UTCDateTime(parts[2])
+                    except Exception as e:
+                        P_time = None
+                    phase_list['P_arrival_times'][-1].append(P_time)
+                    try:
+                        S_time = UTCDateTime(parts[3])
+                    except Exception as e:
+                        S_time = None
+                    phase_list['S_arrival_times'][-1].append(S_time)
 
     return phase_list
 
@@ -431,6 +461,16 @@ def Read_mainshocks_info(filename, skip_header=False):
     return mainshocks_info
 
 
+def Read_stream_data(st_paths):
+    # read data
+    print('reading stream: {}'.format(st_paths[0]))
+    try:
+        st  = read(st_paths[0])
+        st += read(st_paths[1])
+        st += read(st_paths[2])
+    except: 
+        print('bad data!'); return []
+    return st
 
 
 
