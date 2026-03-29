@@ -49,6 +49,7 @@ def get_data_dict(event_dir, event_time, event_mag=None):
 
 def Form_oneday_catalog_for(catalog, date):
     sub_catalog = {
+        'event_id': [],
         'time': [],
         'latitude': [],
         'longitude': [],
@@ -58,6 +59,7 @@ def Form_oneday_catalog_for(catalog, date):
     for i in range(len(catalog['time'])):
         event_time = catalog['time'][i]
         if event_time.date == date.date:
+            sub_catalog['event_id'].append(catalog['event_id'][i])
             sub_catalog['time'].append(event_time)
             sub_catalog['latitude'].append(catalog['latitude'][i])
             sub_catalog['longitude'].append(catalog['longitude'][i])
