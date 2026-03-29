@@ -22,7 +22,7 @@ def Calculate_travel_distance(station_location, event_location, consider_depth=F
 
     distance = R_earth * c
     if consider_depth:
-        depth = event_location[2]
+        depth = event_location[2] + station_location[2] / 1000.0
         distance = np.sqrt(distance**2 + depth**2)
     
     return distance
@@ -103,3 +103,4 @@ def rtp_rotation_reverse(new_t,new_p,theta0,phi0,psi):
     _, t, p = xyz2rtp(x,y,z)
     
     return t, p
+
