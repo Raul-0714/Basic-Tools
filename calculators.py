@@ -104,3 +104,44 @@ def rtp_rotation_reverse(new_t,new_p,theta0,phi0,psi):
     
     return t, p
 
+
+def Get_velocity_value_at(lon, lat, depth_idx, vel_model, vel_lons, vel_lats):
+
+    def Linear_interpolation(x0, x1, v0, v1, x):
+        if x1 == x0:
+            return v0
+        return v0 + (v1 - v0) * (x - x0) / (x1 - x0)
+
+
+    def Is_in_the_region():
+        is_in_the_region = True
+        if lon > vel_lons[-1] or lon < vel_lons[0]:
+            is_in_the_region = False
+        if lat > vel_lats[-1] or lat < vel_lats[0]:
+            is_in_the_region = False
+        return is_in_the_region
+
+    vel_at_depth = vel_model[depth_idx, :, :]
+
+    # Find surrounding grid points for bilinear interpolation
+    if Is_in_the_region():
+        lon_idx1 = np.searchsorted(vel_lons, lon) - 1
+        lon_idx2 = lon_idx1 + 1
+        lon1 = vel_lons[lon_idx1]
+        lon2 = vel_lons[lon_idx2]
+        lat_idx1 = np.searchsorted(vel_lats, lat) - 1
+        lat_idx2 = lat_idx1 + 1
+        lat1 = vel_lats[lat_idx1]
+        lat2 = vel_lats[lat_idx2]
+
+        Q11 = vel_at_depth[lat_idx1, lon_idx1]
+        Q21 = vel_at_depth[lat_idx1, lon_idx2]
+        Q12 = vel_at_depth[lat_idx2, lon_idx1]
+        Q22 = vel_at_depth[lat_idx2, lon_idx2]
+        R1 = Linear_interpolation(lon1, lon2, Q11, Q21, lon)
+        R2 = Linear_interpolation(lon1, lon2, Q12, Q22, lon)
+        P = Linear_interpolation(lat1, lat2, R1, R2, lat)
+    else:
+        P = 0
+
+    return P
