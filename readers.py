@@ -67,8 +67,7 @@ def Read_phase(phase_file, file_type):
         Is_event = False
 
         if file_type == 'Hypoinverse-Output':
-            # If the line begins with 202, it is an event line
-            if line.startswith('202'):
+            if line.startswith('20'):
                 Is_event = True
         elif file_type == 'TomoATT-Input':
             # If the second item in the line is a year (4 digits), it is an event line
@@ -76,7 +75,7 @@ def Read_phase(phase_file, file_type):
             if len(parts[1]) == 4:
                 Is_event = True
         elif file_type == 'Picker-Output':
-            if line.startswith('202'):
+            if line.startswith('20'):
                 Is_event = True
 
         return Is_event
@@ -318,6 +317,46 @@ def Read_faults_list(file, region):
                     faults_list['latitude'].append(fault_lat)
                     index += 1
     return faults_list
+
+
+def Read_main_faults(folder, fault_file_list):
+    main_faults = {
+        'index': [],
+        'longitude': [],
+        'latitude': [],
+        'line_width': [],
+        'color': []
+    }
+
+    for index, fault_file in enumerate(fault_file_list):
+        fault_file_path = os.path.join(folder, fault_file)
+        if os.path.exists(fault_file_path):
+            with open(fault_file_path, 'r') as f:
+                lines = f.readlines()
+                fault_lon = []
+                fault_lat = []
+                for line in lines:
+                    if 'Line-width' in line:
+                        main_faults['line_width'].append(line.strip().split()[1])
+                    elif 'Color' in line:
+                        main_faults['color'].append(line.strip().split()[1])
+                    else:
+                        coordinates = line.strip().split()
+                        try:
+                            lon = coordinates[0]
+                            lat = coordinates[1]
+                            fault_lon.append(float(lon))
+                            fault_lat.append(float(lat))
+                        except IndexError:
+                            print("Invalid coordinates: ", coordinates)
+                            continue
+                if fault_lon and fault_lat:
+                    main_faults['index'].append(index)
+                    main_faults['longitude'].append(fault_lon)
+                    main_faults['latitude'].append(fault_lat)
+        else:
+            print(f"Fault file {fault_file} not found in {folder}.")
+    return main_faults
 
 
 def Read_station_list(station_folder, array_name, skip_header=False):
