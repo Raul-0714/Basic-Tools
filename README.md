@@ -15,3 +15,7 @@ file_processors.py
 
 picker_pal.py
   The STA/LTA phase picker from PAL catalog constructing workflow.
+
+
+plots.py
+  Common plotting functions.
