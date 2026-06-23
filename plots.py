@@ -21,7 +21,7 @@ def Plot_main_faults(main_faults, fig, projection=None):
     for fault_index in range(len(main_faults['index'])):
         x = main_faults['longitude'][fault_index]
         y = main_faults['latitude'][fault_index]
-        linewidth = main_faults['line_wide'][fault_index]
+        linewidth = main_faults['line_width'][fault_index]
         linecolor = main_faults['color'][fault_index]
 
     if projection:
