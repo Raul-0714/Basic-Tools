@@ -22,9 +22,12 @@ def Plot_main_faults(main_faults, fig, projection=None):
         x = main_faults['longitude'][fault_index]
         y = main_faults['latitude'][fault_index]
         linewidth = main_faults['line_width'][fault_index]
+        out_linewidth = float(linewidth) + 1.0
         linecolor = main_faults['color'][fault_index]
 
-    if projection:
-        fig.plot(x=x, y=y, pen=f"{linewidth}p,{linecolor}", projection=projection)
-    else:
-        fig.plot(x=x, y=y, pen=f"{linewidth}p,{linecolor}")
+        if projection:
+            fig.plot(x=x, y=y, pen=f"{out_linewidth}p,white", projection=projection)
+            fig.plot(x=x, y=y, pen=f"{linewidth}p,{linecolor}", projection=projection)
+        else:
+            fig.plot(x=x, y=y, pen=f"{out_linewidth}p,white")
+            fig.plot(x=x, y=y, pen=f"{linewidth}p,{linecolor}")
