@@ -477,7 +477,8 @@ def Read_mainshocks_info(filename, skip_header=False):
         'focal_mechanism': [], # (strike, dip, rake)
         'epicenter_location': [], # (latitude, longitude)
         'fracture_init_point': [], # (latitude, longitude)
-        'symbol_style': [] # (style_string, color,string)
+        'symbol_style': [], # (style_string, color)
+        'background': [] # (style_string, color)
     }
 
     with open(filename, 'r') as f:
@@ -493,6 +494,7 @@ def Read_mainshocks_info(filename, skip_header=False):
                 mainshocks_info['epicenter_location'].append((float(parts[5]), float(parts[6])))
                 mainshocks_info['fracture_init_point'].append((float(parts[7]), float(parts[8])))
                 mainshocks_info['symbol_style'].append((parts[9], parts[10]))
+                mainshocks_info['background'].append((parts[11], parts[12]))
             except (IndexError, ValueError):
                     print("Invalid line: ", line)
                     continue
