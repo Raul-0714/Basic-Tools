@@ -31,3 +31,14 @@ def Plot_main_faults(main_faults, fig, projection=None):
         else:
             fig.plot(x=x, y=y, pen=f"{out_linewidth}p,white")
             fig.plot(x=x, y=y, pen=f"{linewidth}p,{linecolor}")
+
+
+def Plot_epicenters(mainshocks, fig):
+    for index in range(len(mainshocks['index'])):
+        x = mainshocks['epicenter_location'][index][1]
+        y = mainshocks['epicenter_location'][index][0]
+        style = mainshocks['symbol_style'][index][0]
+        fill = mainshocks['symbol_style'][index][1]
+        pen = mainshocks['pen_style'][index][0] + "," + mainshocks['pen_style'][index][1]
+        fig.plot(x=x, y=y, style=style, fill=fill, pen=pen)
+
