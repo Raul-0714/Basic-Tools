@@ -2,6 +2,14 @@ import pygmt
 import numpy as np
 import xarray
 
+def Plot_basemap(region, projection="M6i", title=None):
+    fig = pygmt.Figure()
+    if title:
+        fig.basemap(region=region, projection=projection, frame=['a', f'+t"{title}"'])
+    else:
+        fig.basemap(region=region, projection=projection, frame=['a'])
+    return fig
+
 
 def Plot_hillshade(region, fig):
     grid = pygmt.datasets.load_earth_relief(resolution="01m", region=region)
@@ -9,6 +17,15 @@ def Plot_hillshade(region, fig):
     intensity_grid = pygmt.grdgradient(grid=grid, azimuth=0, normalize='10')
     pygmt.makecpt(cmap='gray', series=[0, 1])
     fig.grdimage(grid=background_grid, projection="M6i", region=region, frame=['a'], shading=intensity_grid, transparency=50)
+
+
+def Plot_coast(fig):
+    fig.coast(
+        water="lightblue",
+        area_thresh=1000,
+        shorelines="1/0.5p,black",
+        resolution="i"
+    )
 
 
 def Plot_faults(faults, fig, projection=None):
