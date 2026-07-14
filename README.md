@@ -19,3 +19,7 @@ picker_pal.py
 
 plots.py
   Common plotting functions.
+
+
+writers.py
+  This script defines functions that output data into formatted files.
