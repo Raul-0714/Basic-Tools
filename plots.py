@@ -11,12 +11,12 @@ def Plot_basemap(region, projection="M6i", title=None):
     return fig
 
 
-def Plot_hillshade(region, fig):
+def Plot_hillshade(region,fig):
     grid = pygmt.datasets.load_earth_relief(resolution="01m", region=region)
     background_grid = xarray.full_like(grid, fill_value=1.0)
     intensity_grid = pygmt.grdgradient(grid=grid, azimuth=0, normalize='10')
     pygmt.makecpt(cmap='gray', series=[0, 1])
-    fig.grdimage(grid=background_grid, projection="M6i", region=region, frame=['a'], shading=intensity_grid, transparency=50)
+    fig.grdimage(grid=background_grid, shading=intensity_grid, transparency=50)
 
 
 def Plot_coast(fig):
