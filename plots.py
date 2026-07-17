@@ -19,6 +19,13 @@ def Plot_hillshade(region,fig):
     fig.grdimage(grid=background_grid, shading=intensity_grid, transparency=50)
 
 
+def Plot_topography(region, fig):
+    grid = pygmt.datasets.load_earth_relief(resolution="01m", region=region)
+    pygmt.makecpt(cmap='gmt/globe', series=[-3000, 3000])
+    fig.grdimage(grid=grid, transparency=20)
+    fig.colorbar(frame=['xa1000+l"Elevation (m)"'])
+
+
 def Plot_coast(fig):
     fig.coast(
         water="lightblue",
