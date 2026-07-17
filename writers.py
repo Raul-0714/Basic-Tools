@@ -7,3 +7,5 @@ def Output_station_list(stations, folder, output_file):
         for i in range(len(stations['index'])):
             f.write(f"{stations['index'][i]},{stations['station_name'][i]},{stations['latitude'][i]},"
                     f"{stations['longitude'][i]},{stations['elevation'][i]},{stations['scaling_factor'][i]}\n")
+            
+
