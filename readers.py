@@ -176,7 +176,7 @@ def Read_phase(phase_file, file_type):
                     parts = line.strip().split()
                     if event_time is not None:
                         phase_list['phase_stations'][-1].append(parts[2])
-                        phase_list['station_locations'][-1].append((float(parts[3]), float(parts[4]), float(parts[5]))) # lat,lon,dep
+                        phase_list['station_locations'][-1].append((float(parts[3]), float(parts[4]), float(parts[5]))) # lat,lon,ele
                         try:
                             if parts[6] == 'P':
                                 P_travel_time = float(parts[7])
