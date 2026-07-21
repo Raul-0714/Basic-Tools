@@ -54,7 +54,7 @@ def Read_catalog(catalog_file, file_type):
     return event_list
 
 
-def Read_phase(phase_file, file_type):
+def Read_phases(phase_file, file_type):
     # Read phase file and extract P and S arrival times
     # A typical phase file has the following format (PAL-Output):
     # Event line: time(can be in two formats: 2023-05-04T23:23:05.759223Z or 20230504232305.91),latitude,longitude,depth,magnitude
