@@ -1,4 +1,5 @@
 import numpy as np
+import obspy
 
 RAD2DEG = 180/np.pi
 DEG2RAD = np.pi/180
@@ -26,6 +27,23 @@ def Calculate_travel_distance(station_location, event_location, consider_depth=F
         distance = np.sqrt(distance**2 + depth**2)
     
     return distance
+
+
+def Calculate_interstation_azimuth(event_loc, sta1_loc, sta2_loc):
+    event_lat = event_loc[0]
+    event_lon = event_loc[1]
+    sta1_lat = sta1_loc[0]
+    sta1_lon = sta1_loc[1]
+    sta2_lat = sta2_loc[0]
+    sta2_lon = sta2_loc[1]
+    _, A1, _ = obspy.geodetics.base.gps2dist_azimuth(event_lat, event_lon, sta1_lat, sta1_lon)
+    _, A2, _ = obspy.geodetics.base.gps2dist_azimuth(event_lat, event_lon, sta2_lat, sta2_lon)
+    interstation_azimuth = 0
+    if (360 - abs(A1-A2)) <= abs(A1-A2):
+        interstation_azimuth = (360 - abs(A1-A2))
+    else:
+        interstation_azimuth = abs(A1-A2)
+    return interstation_azimuth
 
 
 def rtp2xyz(r, theta, phi):
