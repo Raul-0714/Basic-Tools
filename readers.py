@@ -95,7 +95,8 @@ def Read_phases(phase_file, file_type):
         'P_travel_times': [],
         'S_travel_times': [],
         'P_weights': [],
-        'S_weights': []
+        'S_weights': [],
+        'sum_num_recs': []
     }
     
     if file_type == 'Hypoinverse-Output':
@@ -153,6 +154,7 @@ def Read_phases(phase_file, file_type):
         with open(phase_file, 'r') as f:
             lines = f.readlines()
             event_time = None
+            sum_num_records = 0
             for line in lines:
                 if Is_event_line(line):
                     parts = line.strip().split()
@@ -172,6 +174,7 @@ def Read_phases(phase_file, file_type):
                     phase_list['station_locations'].append([])
                     phase_list['P_travel_times'].append([])
                     phase_list['S_travel_times'].append([])
+                    sum_num_records += int(parts[11])
                 else:
                     parts = line.strip().split()
                     if event_time is not None:
@@ -188,6 +191,7 @@ def Read_phases(phase_file, file_type):
                         except Exception as e:
                             print(f"Error parsing travel time with error {e}")
                             continue
+            phase_list['sum_num_recs'].append(sum_num_records)
 
     elif file_type == 'Picker-Output':
         with open(phase_file, 'r') as f:
@@ -266,6 +270,68 @@ def Read_common_receiver_phase_file(cr_phase_file, network_code=''):
                     continue
 
     return cr_phase_list
+
+
+def Read_common_source_phase_file(cs_phase_file, network_code=''):
+
+    def Is_event_line(line):
+        if line.startswith('#'):
+            return True
+        
+    cs_phase_list = {
+        'event_id': [],
+        'num_pairs': [],
+        'sta_name_pairs': [],
+        'sta_loc_pairs':[],
+        'P_dt':[],
+        'sum_num_pairs':[]
+    }
+
+    with open(cs_phase_file, 'r') as f:
+        lines = f.readlines()
+        sum_num_pairs = 0
+        for line in lines:
+            if Is_event_line(line):
+                parts = line.strip().split()
+                try:
+                    cs_phase_list['event_id'].append(parts[1])
+                    cs_phase_list['num_pairs'].append(int(parts[2]))
+                    cs_phase_list['sta_name_pairs'].append([])
+                    cs_phase_list['sta_loc_pairs'].append([])
+                    cs_phase_list['P_dt'].append([])
+                    sum_num_pairs += int(parts[2])
+                except Exception as e:
+                    print(f"Error parsing event line: {line} with error {e}")
+                    continue
+            else:
+                parts = line.strip().split(',')
+                try:
+                    sta1 = parts[0]
+                    lat1 = float(parts[1])
+                    lon1 = float(parts[2])
+                    ele1 = float(parts[3])
+                    sta2 = parts[4]
+                    lat2 = float(parts[5])
+                    lon2 = float(parts[6])
+                    ele2 = float(parts[7])
+                    dt = float(parts[8])
+                    if network_code:
+                        station1_name = network_code + '.' + sta1
+                        station2_name = network_code + '.' + sta2
+                    else:
+                        station1_name = sta1
+                        station2_name = sta2
+                    location1 = (lat1, lon1, ele1)
+                    location2 = (lat2, lon2, ele2)
+                    cs_phase_list['sta_name_pairs'][-1].append((station1_name, station2_name))
+                    cs_phase_list['sta_loc_pairs'][-1].append((location1, location2))
+                    cs_phase_list['P_dt'][-1].append(dt)
+                except Exception as e:
+                    print(f"Error parsing phase line: {line} with error {e}")
+                    continue
+        cs_phase_list['sum_num_pairs'].append(sum_num_pairs)
+
+    return cs_phase_list
 
 
 def Read_faults_list(file, region):
