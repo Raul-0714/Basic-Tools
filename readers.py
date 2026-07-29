@@ -272,7 +272,7 @@ def Read_common_receiver_phase_file(cr_phase_file, network_code=''):
     return cr_phase_list
 
 
-def Read_common_source_phase_file(cs_phase_file, network_code=''):
+def Read_common_source_phase_file(cs_phase_file):
 
     def Is_event_line(line):
         if line.startswith('#'):
@@ -315,15 +315,9 @@ def Read_common_source_phase_file(cs_phase_file, network_code=''):
                     lon2 = float(parts[6])
                     ele2 = float(parts[7])
                     dt = float(parts[8])
-                    if network_code:
-                        station1_name = network_code + '.' + sta1
-                        station2_name = network_code + '.' + sta2
-                    else:
-                        station1_name = sta1
-                        station2_name = sta2
                     location1 = (lat1, lon1, ele1)
                     location2 = (lat2, lon2, ele2)
-                    cs_phase_list['sta_name_pairs'][-1].append((station1_name, station2_name))
+                    cs_phase_list['sta_name_pairs'][-1].append((sta1, sta2))
                     cs_phase_list['sta_loc_pairs'][-1].append((location1, location2))
                     cs_phase_list['P_dt'][-1].append(dt)
                 except Exception as e:
