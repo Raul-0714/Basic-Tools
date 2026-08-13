@@ -35,7 +35,7 @@ def Plot_coast(fig):
     )
 
 
-def Plot_faults(faults, fig, projection=None):
+def Plot_faults(faults, fig, projection=None, pen_style="0.8p,black"):
     x = []
     y = []
     for fault_index in range(len(faults['index'])):
@@ -45,9 +45,9 @@ def Plot_faults(faults, fig, projection=None):
         y.append(np.nan)
 
     if projection:
-        fig.plot(x=x, y=y, pen="0.8p,black", projection=projection)
+        fig.plot(x=x, y=y, pen=pen_style, projection=projection)
     else:
-        fig.plot(x=x, y=y, pen="0.8p,black")
+        fig.plot(x=x, y=y, pen=pen_style)
 
 
 def Plot_main_faults(main_faults, fig, projection=None):
