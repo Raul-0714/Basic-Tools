@@ -2,12 +2,9 @@ import pygmt
 import numpy as np
 import xarray
 
-def Plot_basemap(region, projection="M6i", title=None):
+def Plot_basemap(region, projection="M6i", frame=['a']):
     fig = pygmt.Figure()
-    if title:
-        fig.basemap(region=region, projection=projection, frame=['a', f'+t"{title}"'])
-    else:
-        fig.basemap(region=region, projection=projection, frame=['a'])
+    fig.basemap(region=region, projection=projection, frame=frame)
     return fig
 
 
@@ -17,10 +14,9 @@ def Plot_hillshade(grid_file, fig):
     fig.grdimage(grid=grid_file, shading=intensity_grid, transparency=50)
 
 
-def Plot_topography(region, fig):
-    grid = pygmt.datasets.load_earth_relief(resolution="01m", region=region)
+def Plot_topography(grid_file, fig):
     pygmt.makecpt(cmap='gmt/globe', series=[-3000, 3000])
-    fig.grdimage(grid=grid, transparency=20)
+    fig.grdimage(grid=grid_file, transparency=20)
     fig.colorbar(frame=['xa1000+l"Elevation (m)"'])
 
 
@@ -30,7 +26,20 @@ def Plot_coast(fig):
         area_thresh=1000,
         shorelines="1/0.5p,black",
         resolution="i"
-    )
+    )    
+
+
+def Plot_border(fig, border_type):
+    if border_type == "country":
+        fig.coast(
+            borders="1/0.5p,black,dashed",
+            resolution="i"
+        )
+    elif border_type == "state":
+        fig.coast(
+            borders="2/0.5p,black,dashed",
+            resolution="i"
+        )
 
 
 def Plot_faults(faults, fig, projection=None, pen_style="0.8p,black"):
