@@ -1,4 +1,5 @@
 import os, glob
+import datetime
 
 def get_data_dict(event_dir, event_time, event_mag=None):
     
@@ -66,3 +67,17 @@ def Form_oneday_catalog_for(catalog, date):
             sub_catalog['depth'].append(catalog['depth'][i])
             sub_catalog['magnitude'].append(catalog['magnitude'][i])
     return sub_catalog
+
+
+def Generate_date_list(start_date_string, end_date_string):
+    start_time_date = datetime.datetime.strptime(start_date_string, "%Y%m%d")
+    end_time_date = datetime.datetime.strptime(end_date_string, "%Y%m%d")
+    date_list = []
+
+    time_date = start_time_date
+
+    while time_date < end_time_date:
+        date_list.append(time_date.strftime("%Y%m%d"))
+        time_date = time_date + datetime.timedelta(days=1)
+
+    return date_list
